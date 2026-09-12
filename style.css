@@ -400,7 +400,7 @@ button {
 }
 
 /* ============================================
-   HERO SECTION WITH ROTATING EARTH
+   HERO SECTION WITH REAL 3D EARTH
 ============================================ */
 .hero { 
   position:relative; 
@@ -411,253 +411,129 @@ button {
   padding-top:80px;
 }
 
-/* Earth Container */
+/* 3D Earth Container */
 .earth-container {
   position:absolute;
   top:50%;
-  right:8%;
+  right:5%;
   transform:translateY(-50%);
-  width:450px;
-  height:450px;
-  pointer-events:none;
+  width:520px;
+  height:520px;
   z-index:1;
+  pointer-events:auto;
 }
 
 .earth {
   position:relative;
   width:100%;
   height:100%;
-  perspective:1000px;
+  perspective:1200px;
+  touch-action:none;
 }
 
-.earth-sphere {
+.earth-canvas {
   position:absolute;
   inset:0;
+  width:100%;
+  height:100%;
   border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, rgba(67,232,216,0.3), rgba(108,99,255,0.2), rgba(5,5,16,0.9));
-  box-shadow:
-    inset -30px -30px 80px rgba(0,0,0,0.5),
-    inset 20px 20px 60px rgba(108,99,255,0.2),
-    0 0 80px rgba(108,99,255,0.3);
-  animation:earthRotate 40s linear infinite;
-  border:1px solid rgba(108,99,255,0.2);
-}
-
-/* Location Markers on Earth */
-.marker {
-  position:absolute;
+  overflow:visible;
+  cursor:grab;
   z-index:2;
-  cursor:pointer;
 }
 
-.marker-dot {
-  width:12px;
-  height:12px;
-  background:var(--accent);
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,0.3);
-  box-shadow:0 0 15px var(--accent);
-  animation:markerPulse 2s ease-in-out infinite;
+.earth-canvas:active {
+  cursor:grabbing;
 }
 
-.marker-pulse {
+.earth-canvas canvas {
+  display:block;
+  width:100% !important;
+  height:100% !important;
+}
+
+.earth-loading {
   position:absolute;
-  top:-6px;
-  left:-6px;
-  width:24px;
-  height:24px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  border:1px solid rgba(108,99,255,0.2);
+  border-radius:50px;
+  background:rgba(5,5,16,0.55);
+  backdrop-filter:blur(12px);
+  color:var(--muted);
+  font-size:0.72rem;
+  white-space:nowrap;
+  transition:opacity 0.35s ease;
+}
+
+.earth-loading.hidden {
+  opacity:0;
+  pointer-events:none;
+}
+
+.earth-loading-dot {
+  width:7px;
+  height:7px;
   border-radius:50%;
-  background:rgba(67,232,216,0.2);
-  animation:markerRipple 2s ease-out infinite;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--accent);
+  animation:badgePulse 1.2s ease-in-out infinite;
 }
 
-/* Marker Positions (simulating globe coordinates) */
-.marker-india {
-  top:45%;
-  left:65%;
-}
-
-.marker-usa {
-  top:35%;
-  left:20%;
-}
-
-.marker-uk {
-  top:28%;
-  left:48%;
-}
-
-.marker-australia {
-  top:70%;
-  left:75%;
-}
-
-.marker-canada {
-  top:25%;
-  left:25%;
-}
-
-/* Orbit Rings */
+/* Decorative Orbit Rings */
 .orbit-ring {
   position:absolute;
+  left:50%;
+  top:50%;
+  width:100%;
+  height:100%;
   border-radius:50%;
-  border:1px solid rgba(108,99,255,0.15);
-  animation:orbitRotate 20s linear infinite;
+  border:1px solid rgba(108,99,255,0.14);
+  pointer-events:none;
+  transform:translate(-50%,-50%) rotate(-18deg) scaleX(0.36);
+  animation:orbitFloat 18s linear infinite;
+  z-index:1;
 }
 
 .orbit-1 {
-  inset:-15%;
-  animation-duration:25s;
+  width:125%;
+  height:125%;
 }
 
 .orbit-2 {
-  inset:-25%;
-  animation-duration:35s;
+  width:145%;
+  height:145%;
+  transform:translate(-50%,-50%) rotate(28deg) scaleX(0.42);
+  animation-duration:25s;
   animation-direction:reverse;
-  border-color:rgba(67,232,216,0.1);
+  border-color:rgba(67,232,216,0.10);
+}
+
+@keyframes orbitFloat {
+  from { transform:translate(-50%,-50%) rotate(-18deg) scaleX(0.36); }
+  to { transform:translate(-50%,-50%) rotate(342deg) scaleX(0.36); }
+}
+
+.orbit-2 {
+  animation-name:orbitFloat2;
+}
+
+@keyframes orbitFloat2 {
+  from { transform:translate(-50%,-50%) rotate(28deg) scaleX(0.42); }
+  to { transform:translate(-50%,-50%) rotate(-332deg) scaleX(0.42); }
 }
 
 .hero-content { 
   position:relative; 
-  z-index:2; 
+  z-index:3; 
   max-width:650px; 
   padding:40px 24px; 
-}
-
-.hero-badge {
-  display:inline-flex; 
-  align-items:center; 
-  gap:10px;
-  background:var(--glass-bg); 
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(108,99,255,0.2);
-  border-radius:50px; 
-  padding:10px 20px; 
-  margin-bottom:24px;
-}
-
-.badge-dot { 
-  width:8px; 
-  height:8px; 
-  background:var(--accent); 
-  border-radius:50%; 
-  animation:badgePulse 2s ease-in-out infinite; 
-}
-
-.badge-text { 
-  font-size:0.8rem; 
-  color:var(--muted); 
-  font-weight:500;
-}
-
-.hero-title { 
-  font-size:clamp(2.5rem,7vw,4.5rem); 
-  font-weight:900; 
-  line-height:1.1; 
-  margin-bottom:20px; 
-}
-
-.title-line { 
-  display:block; 
-}
-
-.hero-roles {
-  font-size:clamp(1rem,2.5vw,1.3rem);
-  color:var(--muted);
-  margin-bottom:20px;
-  font-weight:500;
-  min-height:40px;
-}
-
-.role-prefix { 
-  color:var(--muted); 
-}
-
-.typed-text { 
-  color:var(--accent); 
-  font-weight:700; 
-}
-
-.hero-subtitle { 
-  font-size:clamp(0.95rem,2vw,1.05rem); 
-  color:var(--muted); 
-  max-width:560px; 
-  line-height:1.8; 
-  margin-bottom:32px; 
-}
-
-.hero-subtitle strong { 
-  color:var(--white); 
-}
-
-.hero-cta { 
-  display:flex; 
-  flex-wrap:wrap; 
-  gap:12px; 
-  margin-bottom:40px; 
-}
-
-.hero-social { 
-  display:flex; 
-  align-items:center; 
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.social-btn {
-  width:44px; 
-  height:44px; 
-  border-radius:50%;
-  border:1px solid var(--border); 
-  background:var(--glass-bg);
-  backdrop-filter:blur(20px);
-  display:flex; 
-  align-items:center; 
-  justify-content:center;
-  color:var(--muted); 
-  transition:all 0.3s ease;
-}
-
-.social-btn:hover { 
-  color:var(--primary); 
-  border-color:var(--primary); 
-  transform:translateY(-3px); 
-  box-shadow:0 4px 12px rgba(108,99,255,0.3);
-}
-
-.social-divider { 
-  width:1px; 
-  height:30px; 
-  background:var(--border); 
-}
-
-.social-handle { 
-  font-size:0.8rem; 
-  color:var(--muted); 
-}
-
-.scroll-indicator {
-  position:absolute; 
-  bottom:40px; 
-  left:50%; 
-  transform:translateX(-50%);
-  display:flex; 
-  flex-direction:column; 
-  align-items:center; 
-  gap:8px; 
-  z-index:2;
-}
-
-.scroll-indicator span { 
-  font-size:0.7rem; 
-  letter-spacing:0.2em; 
-  text-transform:uppercase; 
-  color:var(--muted); 
-}
-
-.scroll-arrow { 
-  animation:bounceY 1.5s ease-in-out infinite; 
-  color:var(--primary); 
 }
 
 /* ============================================
@@ -1560,9 +1436,9 @@ button {
 ============================================ */
 @media(max-width:1024px){
   .earth-container {
-    width:350px;
-    height:350px;
-    right:5%;
+    width:400px;
+    height:400px;
+    right:2%;
   }
   
   .about .container { 
@@ -1611,12 +1487,12 @@ button {
   }
   
   .earth-container {
-    width:280px;
-    height:280px;
-    top:10%;
+    width:320px;
+    height:320px;
+    top:8%;
     right:50%;
     transform:translateX(50%);
-    opacity:0.3;
+    opacity:0.42;
   }
   
   .hero-content {
@@ -1692,8 +1568,9 @@ button {
   }
   
   .earth-container {
-    width:220px;
-    height:220px;
+    width:245px;
+    height:245px;
+    top:7%;
   }
 }
 
