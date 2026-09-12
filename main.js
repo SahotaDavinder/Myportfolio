@@ -383,37 +383,325 @@ function initContactForm() {
 }
 
 /* ============================================
-   10. EARTH ROTATION ENHANCEMENT
+   10. REAL 3D EARTH
 ============================================ */
-function initEarthInteraction() {
-  const earth = document.querySelector('.earth-sphere');
-  if (!earth || isMobile) return; // Skip on mobile for performance
+async function initEarthInteraction() {
+  const container = document.getElementById('earthCanvas');
+  const loading = document.querySelector('.earth-loading');
+  if (!container) return;
 
-  let mouseX = 0;
-  let mouseY = 0;
+  try {
+    // Load Three.js only when the Earth is present.
+    const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js');
 
-  document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    
-    // Subtle parallax effect
-    requestAnimationFrame(() => {
-      earth.style.transform = `rotateY(${mouseX * 5}deg) rotateX(${-mouseY * 5}deg)`;
-    });
-  });
+    const width = container.clientWidth || 520;
+    const height = container.clientHeight || 520;
+    const isSmallScreen = window.innerWidth <= 768;
 
-  // Marker tooltips
-  document.querySelectorAll('.marker').forEach(marker => {
-    marker.addEventListener('mouseenter', function() {
-      const country = this.dataset.country;
-      // You can add a tooltip here if needed
-      this.style.transform = 'scale(1.2)';
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 100);
+    camera.position.set(0, 0, 4.15);
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: true,
+      powerPreference: 'high-performance'
     });
-    
-    marker.addEventListener('mouseleave', function() {
-      this.style.transform = 'scale(1)';
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmallScreen ? 1.5 : 2));
+    renderer.setSize(width, height, false);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x6c63ff, 0.45);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    sunLight.position.set(-3, 2, 4);
+    scene.add(sunLight);
+
+    const rimLight = new THREE.DirectionalLight(0x43e8d8, 1.25);
+    rimLight.position.set(4, -1, -3);
+    scene.add(rimLight);
+
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
+
+    const radius = 1.48;
+    const geometry = new THREE.SphereGeometry(radius, isSmallScreen ? 48 : 64, isSmallScreen ? 48 : 64);
+
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin('anonymous');
+
+    const loadTexture = (url) => new Promise((resolve, reject) => {
+      textureLoader.load(url, resolve, undefined, reject);
     });
-  });
+
+    const textureBase = 'https://threejs.org/examples/textures/planets/';
+
+    const [earthTexture, normalTexture, specularTexture] = await Promise.all([
+      loadTexture(textureBase + 'earth_atmos_2048.jpg'),
+      loadTexture(textureBase + 'earth_normal_2048.jpg'),
+      loadTexture(textureBase + 'earth_specular_2048.jpg')
+    ]);
+
+    earthTexture.colorSpace = THREE.SRGBColorSpace;
+
+    const earthMaterial = new THREE.MeshPhongMaterial({
+      map: earthTexture,
+      normalMap: normalTexture,
+      normalScale: new THREE.Vector2(0.55, 0.55),
+      specularMap: specularTexture,
+      specular: new THREE.Color(0x4466aa),
+      shininess: 18,
+      emissive: new THREE.Color(0x07152b),
+      emissiveIntensity: 0.22
+    });
+
+    const earth = new THREE.Mesh(geometry, earthMaterial);
+    earthGroup.add(earth);
+
+    // Soft atmospheric shell.
+    const atmosphereGeometry = new THREE.SphereGeometry(radius * 1.035, 48, 48);
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        glowColor: { value: new THREE.Color(0x43e8d8) }
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+          vWorldPosition = worldPosition.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        varying vec3 vNormal;
+        varying vec3 vWorldPosition;
+        void main() {
+          vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+          float rim = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 3.0);
+          gl_FragColor = vec4(glowColor, rim * 0.72);
+        }
+      `,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true,
+      depthWrite: false
+    });
+
+    const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+    earthGroup.add(atmosphere);
+
+    // Subtle city/location markers placed on the 3D globe.
+    const locations = [
+      { name: 'India', lat: 22.5, lon: 78.9, color: 0x43e8d8 },
+      { name: 'USA', lat: 39.8, lon: -98.6, color: 0x6c63ff },
+      { name: 'UK', lat: 54.0, lon: -2.0, color: 0xff6584 },
+      { name: 'Australia', lat: -25.3, lon: 133.8, color: 0x43e8d8 },
+      { name: 'Canada', lat: 56.1, lon: -106.3, color: 0x6c63ff }
+    ];
+
+    const markerGroup = new THREE.Group();
+    earthGroup.add(markerGroup);
+
+    function latLonToVector3(lat, lon, r) {
+      const phi = (90 - lat) * Math.PI / 180;
+      const theta = (lon + 180) * Math.PI / 180;
+      return new THREE.Vector3(
+        -r * Math.sin(phi) * Math.cos(theta),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    locations.forEach((location) => {
+      const point = latLonToVector3(location.lat, location.lon, radius * 1.012);
+      const markerGeometry = new THREE.SphereGeometry(isSmallScreen ? 0.035 : 0.045, 12, 12);
+      const markerMaterial = new THREE.MeshBasicMaterial({
+        color: location.color,
+        transparent: true,
+        opacity: 1
+      });
+      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+      marker.position.copy(point);
+      marker.userData.location = location.name;
+      markerGroup.add(marker);
+
+      const glowGeometry = new THREE.SphereGeometry(isSmallScreen ? 0.075 : 0.09, 12, 12);
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: location.color,
+        transparent: true,
+        opacity: 0.16,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+      glow.position.copy(point);
+      markerGroup.add(glow);
+    });
+
+    // Stars around the globe.
+    const starCount = isSmallScreen ? 350 : 700;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      const r = 5 + Math.random() * 8;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      starPositions[i * 3 + 1] = r * Math.cos(phi);
+      starPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+
+    const starGeometry = new THREE.BufferGeometry();
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMaterial = new THREE.PointsMaterial({
+      color: 0xb9c9ff,
+      size: isSmallScreen ? 0.018 : 0.024,
+      transparent: true,
+      opacity: 0.65,
+      sizeAttenuation: true
+    });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    // Start with India facing the viewer.
+    earthGroup.rotation.y = THREE.MathUtils.degToRad(-20);
+    earthGroup.rotation.x = THREE.MathUtils.degToRad(5);
+
+    let targetRotationX = earthGroup.rotation.x;
+    let targetRotationY = earthGroup.rotation.y;
+    let velocityX = 0;
+    let velocityY = 0;
+    let isDragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let lastTime = performance.now();
+
+    const canvas = renderer.domElement;
+
+    const onPointerDown = (event) => {
+      isDragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      velocityX = 0;
+      velocityY = 0;
+      canvas.setPointerCapture?.(event.pointerId);
+    };
+
+    const onPointerMove = (event) => {
+      if (!isDragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      targetRotationY += dx * 0.008;
+      targetRotationX += dy * 0.006;
+      targetRotationX = THREE.MathUtils.clamp(targetRotationX, -0.85, 0.85);
+      velocityX = dy * 0.0008;
+      velocityY = dx * 0.001;
+      lastX = event.clientX;
+      lastY = event.clientY;
+    };
+
+    const onPointerUp = (event) => {
+      isDragging = false;
+      canvas.releasePointerCapture?.(event.pointerId);
+    };
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
+    canvas.addEventListener('pointerleave', () => { if (isDragging) isDragging = false; });
+
+    // Gentle mouse parallax without fighting manual rotation.
+    let mouseInfluenceX = 0;
+    let mouseInfluenceY = 0;
+    const onMouseMove = (event) => {
+      if (isDragging) return;
+      mouseInfluenceX = (event.clientX / window.innerWidth - 0.5) * 0.12;
+      mouseInfluenceY = (event.clientY / window.innerHeight - 0.5) * 0.08;
+    };
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+
+    const resize = () => {
+      const w = container.clientWidth || width;
+      const h = container.clientHeight || height;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth <= 768 ? 1.5 : 2));
+      renderer.setSize(w, h, false);
+    };
+    window.addEventListener('resize', resize);
+
+    if (loading) loading.classList.add('hidden');
+
+    const clock = new THREE.Clock();
+    let animationFrame;
+
+    const animate = () => {
+      animationFrame = requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+
+      if (!isDragging) {
+        targetRotationY += delta * 0.085;
+        targetRotationY += velocityY;
+        targetRotationX += velocityX;
+        velocityX *= 0.94;
+        velocityY *= 0.94;
+      }
+
+      const now = performance.now();
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      const smooth = 1 - Math.pow(0.001, dt);
+
+      earthGroup.rotation.y += (targetRotationY + mouseInfluenceX - earthGroup.rotation.y) * smooth;
+      earthGroup.rotation.x += (targetRotationX + mouseInfluenceY - earthGroup.rotation.x) * smooth;
+
+      stars.rotation.y -= delta * 0.006;
+      stars.rotation.x += delta * 0.002;
+
+      // Pulse the location glows.
+      const pulse = 1 + Math.sin(performance.now() * 0.003) * 0.18;
+      markerGroup.children.forEach((object, index) => {
+        if (index % 2 === 1) object.scale.setScalar(pulse);
+      });
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Clean up if the page is later reinitialized.
+    container._earthCleanup = () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMouseMove);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointercancel', onPointerUp);
+      renderer.dispose();
+      geometry.dispose();
+      earthMaterial.dispose();
+      atmosphereGeometry.dispose();
+      atmosphereMaterial.dispose();
+      starGeometry.dispose();
+      starMaterial.dispose();
+    };
+
+  } catch (error) {
+    console.error('3D Earth failed to load:', error);
+    if (loading) {
+      loading.classList.remove('hidden');
+      loading.innerHTML = '<span class="earth-loading-dot"></span> 3D Earth unavailable';
+    }
+  }
 }
 
 /* ============================================
