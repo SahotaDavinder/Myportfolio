@@ -108,35 +108,16 @@
   <!-- ===== HERO SECTION WITH ROTATING EARTH ===== -->
   <section id="hero" class="hero" aria-label="Hero section">
     
-    <!-- Earth Container -->
+    <!-- ===== REAL 3D EARTH ===== -->
     <div class="earth-container" aria-hidden="true">
-      <div class="earth">
-        <!-- Earth sphere with CSS gradient -->
-        <div class="earth-sphere">
-          <!-- Location markers -->
-          <div class="marker marker-india" data-country="India">
-            <div class="marker-dot"></div>
-            <div class="marker-pulse"></div>
-          </div>
-          <div class="marker marker-usa" data-country="USA">
-            <div class="marker-dot"></div>
-            <div class="marker-pulse"></div>
-          </div>
-          <div class="marker marker-uk" data-country="UK">
-            <div class="marker-dot"></div>
-            <div class="marker-pulse"></div>
-          </div>
-          <div class="marker marker-australia" data-country="Australia">
-            <div class="marker-dot"></div>
-            <div class="marker-pulse"></div>
-          </div>
-          <div class="marker marker-canada" data-country="Canada">
-            <div class="marker-dot"></div>
-            <div class="marker-pulse"></div>
-          </div>
+      <div class="earth" id="earthScene">
+        <div id="earthCanvas" class="earth-canvas" aria-hidden="true"></div>
+        <div class="earth-loading">
+          <span class="earth-loading-dot"></span>
+          Loading Earth...
         </div>
       </div>
-      <!-- Orbit rings -->
+      <!-- Decorative orbit rings -->
       <div class="orbit-ring orbit-1"></div>
       <div class="orbit-ring orbit-2"></div>
     </div>
