@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Davinder Singh - WordPress Developer & Web Designer</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="neon-loader"></div>
+            <p>Loading</p>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <div class="logo">Davinder Singh</div>
+                <div class="logo">
+                    <span class="neon-text">DS</span>
+                </div>
                 <ul class="nav-menu">
                     <li><a href="#home" class="nav-link">Home</a></li>
                     <li><a href="#about" class="nav-link">About</a></li>
@@ -34,17 +44,23 @@
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">Hi, I'm <span class="highlight">Davinder Singh</span></h1>
+                <h1 class="hero-title">
+                    Hi, I'm <span class="neon-text">Davinder Singh</span>
+                </h1>
                 <p class="hero-subtitle">WordPress Developer | Web Designer | Team Supervisor</p>
                 <p class="hero-description">
                     Transforming ideas into high-performance, responsive websites with 3+ years of expertise
                 </p>
                 <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                    <a href="#projects" class="btn btn-neon btn-primary">
+                        <i class="fas fa-rocket"></i> View My Work
+                    </a>
+                    <a href="#contact" class="btn btn-neon btn-secondary">
+                        <i class="fas fa-envelope"></i> Get In Touch
+                    </a>
                 </div>
                 <div class="hero-location">
-                    <i class="fas fa-map-marker-alt"></i> Khanna, Punjab, India
+                    <i class="fas fa-map-marker-alt neon-icon"></i> Khanna, Punjab, India
                 </div>
             </div>
         </div>
@@ -53,7 +69,9 @@
     <!-- About Section -->
     <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">About Me</h2>
+            <h2 class="section-title">
+                <span class="neon-text">About Me</span>
+            </h2>
             <div class="about-content">
                 <div class="about-text">
                     <p>
@@ -71,9 +89,6 @@
                         I'm committed to delivering excellence, optimizing performance, and building lasting partnerships 
                         with clients.
                     </p>
-                    <div class="about-cta">
-                        <a href="#contact" class="btn btn-primary">Let's Work Together</a>
-                    </div>
                 </div>
                 <div class="about-stats">
                     <div class="stat">
@@ -100,10 +115,14 @@
     <!-- Skills Section -->
     <section id="skills" class="skills">
         <div class="container">
-            <h2 class="section-title">Core Competencies</h2>
+            <h2 class="section-title">
+                <span class="neon-text">Core Competencies</span>
+            </h2>
             <div class="skills-grid">
                 <div class="skill-category">
-                    <h3><i class="fas fa-code"></i> Development</h3>
+                    <h3>
+                        <i class="fas fa-code neon-icon"></i> Development
+                    </h3>
                     <div class="skill-tags">
                         <span class="skill-tag">WordPress</span>
                         <span class="skill-tag">PHP</span>
@@ -112,7 +131,9 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-palette"></i> Design</h3>
+                    <h3>
+                        <i class="fas fa-palette neon-icon"></i> Design
+                    </h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Responsive Design</span>
                         <span class="skill-tag">UI/UX Optimization</span>
@@ -121,7 +142,9 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-tools"></i> Tools & Plugins</h3>
+                    <h3>
+                        <i class="fas fa-tools neon-icon"></i> Tools & Plugins
+                    </h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Elementor</span>
                         <span class="skill-tag">Avada</span>
@@ -130,7 +153,9 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-users"></i> Leadership</h3>
+                    <h3>
+                        <i class="fas fa-users neon-icon"></i> Leadership
+                    </h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Team Leadership</span>
                         <span class="skill-tag">Operations Management</span>
@@ -145,7 +170,9 @@
     <!-- Experience Section -->
     <section id="experience" class="experience">
         <div class="container">
-            <h2 class="section-title">Professional Experience</h2>
+            <h2 class="section-title">
+                <span class="neon-text">Professional Experience</span>
+            </h2>
             <div class="experience-timeline">
                 <div class="timeline-item">
                     <div class="timeline-marker"></div>
@@ -184,11 +211,13 @@
     <!-- Education Section -->
     <section id="education" class="education">
         <div class="container">
-            <h2 class="section-title">Education & Certifications</h2>
+            <h2 class="section-title">
+                <span class="neon-text">Education & Certifications</span>
+            </h2>
             <div class="education-grid">
                 <div class="education-card">
                     <div class="education-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                        <i class="fas fa-graduation-cap neon-icon"></i>
                     </div>
                     <h3>Bachelor of Computer Applications (BCA)</h3>
                     <p class="education-school">Panjab University, Chandigarh</p>
@@ -196,7 +225,7 @@
                 </div>
                 <div class="education-card">
                     <div class="education-icon">
-                        <i class="fas fa-certificate"></i>
+                        <i class="fas fa-certificate neon-icon"></i>
                     </div>
                     <h3>AI Tools for Web Development</h3>
                     <p class="education-school">Prompt Engineering & ChatGPT API</p>
@@ -204,7 +233,7 @@
                 </div>
                 <div class="education-card">
                     <div class="education-icon">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-book neon-icon"></i>
                     </div>
                     <h3>Tally Accounting</h3>
                     <p class="education-school">6-Month Certified Course</p>
@@ -217,100 +246,126 @@
     <!-- Projects Section -->
     <section id="projects" class="projects">
         <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
+            <h2 class="section-title">
+                <span class="neon-text">Featured Projects</span>
+            </h2>
             <div class="projects-grid">
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">RA</div>
+                    </div>
                     <div class="project-content">
                         <h3>Revenue Accelerators</h3>
                         <p>High-performance WordPress site with PHP and JavaScript optimization. Achieved 40% speed improvement through advanced caching strategies.</p>
                         <div class="project-tags">
-                            <span>WordPress</span>
-                            <span>PHP</span>
-                            <span>Performance Optimization</span>
+                            <span class="project-tag">WordPress</span>
+                            <span class="project-tag">PHP</span>
+                            <span class="project-tag">Performance</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="link"><i class="fas fa-link"></i> View Project</a>
+                            <a href="#" class="link neon-link">
+                                <i class="fas fa-external-link-alt"></i> View Project
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">CR</div>
+                    </div>
                     <div class="project-content">
                         <h3>Compass Rose Ventures</h3>
                         <p>Corporate website built with Bootstrap 5 and fully optimized for search engines. Responsive design across all devices with modern UI/UX.</p>
                         <div class="project-tags">
-                            <span>Bootstrap 5</span>
-                            <span>SEO Optimization</span>
-                            <span>Responsive Design</span>
+                            <span class="project-tag">Bootstrap 5</span>
+                            <span class="project-tag">SEO</span>
+                            <span class="project-tag">Responsive</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="link"><i class="fas fa-link"></i> View Project</a>
+                            <a href="#" class="link neon-link">
+                                <i class="fas fa-external-link-alt"></i> View Project
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">EC</div>
+                    </div>
                     <div class="project-content">
                         <h3>Eagle Cash Buyers</h3>
                         <p>Real estate WordPress site featuring integrated AI chatbot with ChatGPT API for customer support and engagement optimization.</p>
                         <div class="project-tags">
-                            <span>WordPress</span>
-                            <span>AI Integration</span>
-                            <span>ChatGPT API</span>
+                            <span class="project-tag">WordPress</span>
+                            <span class="project-tag">AI Integration</span>
+                            <span class="project-tag">ChatGPT API</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="link"><i class="fas fa-link"></i> View Project</a>
+                            <a href="#" class="link neon-link">
+                                <i class="fas fa-external-link-alt"></i> View Project
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">FA</div>
+                    </div>
                     <div class="project-content">
                         <h3>Fury Analytics</h3>
                         <p>Interactive dashboard UI with dynamic charts and real-time data visualization using vanilla JavaScript and modern web technologies.</p>
                         <div class="project-tags">
-                            <span>JavaScript</span>
-                            <span>UI Design</span>
-                            <span>Data Visualization</span>
+                            <span class="project-tag">JavaScript</span>
+                            <span class="project-tag">UI Design</span>
+                            <span class="project-tag">Data Viz</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="link"><i class="fas fa-link"></i> View Project</a>
+                            <a href="#" class="link neon-link">
+                                <i class="fas fa-external-link-alt"></i> View Project
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">WB</div>
+                    </div>
                     <div class="project-content">
                         <h3>WBWHC (Australia)</h3>
                         <p>Full custom WordPress site for Australian client. Complete website development from concept to deployment with ongoing support.</p>
                         <div class="project-tags">
-                            <span>WordPress</span>
-                            <span>Custom Development</span>
-                            <span>International Client</span>
+                            <span class="project-tag">WordPress</span>
+                            <span class="project-tag">Custom Dev</span>
+                            <span class="project-tag">International</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="link"><i class="fas fa-link"></i> View Project</a>
+                            <a href="#" class="link neon-link">
+                                <i class="fas fa-external-link-alt"></i> View Project
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);"></div>
+                    <div class="project-image">
+                        <div class="project-letter">+</div>
+                    </div>
                     <div class="project-content">
                         <h3>More Projects Coming</h3>
                         <p>Developing innovative web solutions with cutting-edge technologies. Check back soon for updates on new projects and case studies.</p>
                         <div class="project-tags">
-                            <span>WordPress</span>
-                            <span>Web Design</span>
-                            <span>Development</span>
+                            <span class="project-tag">WordPress</span>
+                            <span class="project-tag">Web Design</span>
+                            <span class="project-tag">Development</span>
                         </div>
                         <div class="project-links">
-                            <a href="#contact" class="link"><i class="fas fa-envelope"></i> Contact for Details</a>
+                            <a href="#contact" class="link neon-link">
+                                <i class="fas fa-envelope"></i> Contact Me
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -321,14 +376,16 @@
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
+            <h2 class="section-title">
+                <span class="neon-text">Get In Touch</span>
+            </h2>
             <p class="section-subtitle">Let's create something amazing together. Feel free to reach out!</p>
             
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-envelope neon-icon"></i>
                         </div>
                         <div>
                             <h4>Email</h4>
@@ -337,7 +394,7 @@
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
+                            <i class="fas fa-phone neon-icon"></i>
                         </div>
                         <div>
                             <h4>Phone</h4>
@@ -346,7 +403,7 @@
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+                            <i class="fas fa-map-marker-alt neon-icon"></i>
                         </div>
                         <div>
                             <h4>Location</h4>
@@ -355,7 +412,7 @@
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">
-                            <i class="fas fa-language"></i>
+                            <i class="fas fa-language neon-icon"></i>
                         </div>
                         <div>
                             <h4>Languages</h4>
@@ -377,8 +434,9 @@
                     <div class="form-group">
                         <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                    <p class="form-note">I'll get back to you within 24 hours!</p>
+                    <button type="submit" class="btn btn-neon btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
                 </form>
             </div>
         </div>
@@ -388,15 +446,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-left">
-                    <p>&copy; 2024 Davinder Singh. All rights reserved.</p>
-                </div>
-                <div class="social-links">
-                    <a href="https://github.com" title="GitHub" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://linkedin.com" title="LinkedIn" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a href="https://twitter.com" title="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="mailto:inder16933@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-                </div>
+                <p>&copy; 2024 Davinder Singh. All rights reserved.</p>
             </div>
         </div>
     </footer>
