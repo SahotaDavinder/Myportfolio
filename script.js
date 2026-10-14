@@ -82,14 +82,14 @@ function showNotification(message, type = 'success') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#00ff00' : '#ff0080'};
+        background: ${type === 'success' ? '#00d4ff' : '#ff006e'};
         color: #0a0a0a;
         padding: 1rem 1.5rem;
         border-radius: 5px;
         font-weight: 600;
         z-index: 10000;
         animation: slideIn 0.5s ease-out;
-        box-shadow: 0 0 20px ${type === 'success' ? 'rgba(0, 255, 0, 0.6)' : 'rgba(255, 0, 128, 0.6)'};
+        box-shadow: 0 10px 30px ${type === 'success' ? 'rgba(0, 212, 255, 0.3)' : 'rgba(255, 0, 110, 0.3)'};
         max-width: 400px;
     `;
     
@@ -108,9 +108,9 @@ function showNotification(message, type = 'success') {
 window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
-        navbar.style.boxShadow = '0 0 30px rgba(0, 255, 255, 0.4)';
+        navbar.style.borderBottomColor = 'rgba(0, 212, 255, 0.3)';
     } else {
-        navbar.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.3)';
+        navbar.style.borderBottomColor = '#2a2a3e';
     }
 });
 
