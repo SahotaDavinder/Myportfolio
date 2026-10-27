@@ -1,179 +1,68 @@
-// ============================================
-// PRELOADER
-// ============================================
-window.addEventListener('load', function() {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        setTimeout(function() {
-            preloader.style.display = 'none';
-        }, 2000);
-    }
-});
+(() => {
+  const menuButton = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('.main-nav');
+  const navLinks = nav ? nav.querySelectorAll('a') : [];
 
-// ============================================
-// Mobile Menu Toggle
-// ============================================
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+  function closeMenu() {
+    if (!menuButton || !nav) return;
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Open navigation');
+    nav.classList.remove('is-open');
+    document.body.classList.remove('menu-open');
+  }
 
-if (hamburger) {
-    hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
+  if (menuButton && nav) {
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') !== 'true';
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      nav.classList.toggle('is-open', open);
+      document.body.classList.toggle('menu-open', open);
     });
-}
-
-// Close menu when link is clicked
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function() {
-        if (hamburger) hamburger.classList.remove('active');
-        if (navMenu) navMenu.classList.remove('active');
+    navLinks.forEach(link => link.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMenu();
     });
-});
-
-// ============================================
-// Smooth scroll for anchor links
-// ============================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 680) closeMenu();
     });
-});
+  }
 
-// ============================================
-// Contact Form Handler
-// ============================================
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const name = this.querySelector('input[name="name"]').value;
-        const email = this.querySelector('input[name="email"]').value;
-        
-        // Simple email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            showNotification('Please enter a valid email address', 'error');
-            return;
+  const revealItems = document.querySelectorAll('.reveal');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if ('IntersectionObserver' in window && !reducedMotion) {
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          currentObserver.unobserve(entry.target);
         }
-        
-        // Show success message
-        showNotification(`Thank you ${name}! Your message has been sent. I'll get back to you soon!`, 'success');
-        this.reset();
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' });
+    revealItems.forEach((item, index) => {
+      if (item.classList.contains('skill-row') || item.classList.contains('timeline-item')) {
+        item.style.setProperty('--delay', `${(index % 4) * 55}ms`);
+      }
+      observer.observe(item);
     });
-}
+  } else {
+    revealItems.forEach(item => item.classList.add('is-visible'));
+  }
 
-// ============================================
-// Notification System
-// ============================================
-function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#00d4ff' : '#ff006e'};
-        color: #0a0a0a;
-        padding: 1rem 1.5rem;
-        border-radius: 5px;
-        font-weight: 600;
-        z-index: 10000;
-        animation: slideIn 0.5s ease-out;
-        box-shadow: 0 10px 30px ${type === 'success' ? 'rgba(0, 212, 255, 0.3)' : 'rgba(255, 0, 110, 0.3)'};
-        max-width: 400px;
-    `;
-    
-    notification.innerHTML = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.5s ease-out';
-        setTimeout(() => notification.remove(), 500);
-    }, 5000);
-}
+  const year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
 
-// ============================================
-// Navbar shadow on scroll
-// ============================================
-window.addEventListener('scroll', function() {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.borderBottomColor = 'rgba(0, 212, 255, 0.3)';
-    } else {
-        navbar.style.borderBottomColor = '#2a2a3e';
-    }
-});
-
-// ============================================
-// Scroll to Top Button
-// ============================================
-function createScrollToTopButton() {
-    const button = document.createElement('button');
-    button.id = 'scrollToTop';
-    button.innerHTML = '<i class="fas fa-arrow-up"></i>';
-    button.setAttribute('aria-label', 'Scroll to top');
-    document.body.appendChild(button);
-    
-    window.addEventListener('scroll', function() {
-        if (window.pageYOffset > 300) {
-            button.style.display = 'flex';
-        } else {
-            button.style.display = 'none';
-        }
+  // Ensure same-page navigation closes the mobile menu and supports keyboard use.
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', event => {
+      const id = anchor.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      event.preventDefault();
+      closeMenu();
+      target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(null, '', id);
     });
-    
-    button.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
-
-document.addEventListener('DOMContentLoaded', createScrollToTopButton);
-
-// ============================================
-// Add animations to style
-// ============================================
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(400px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(400px);
-        }
-    }
-
-    #scrollToTop {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
-`;
-document.head.appendChild(style);
-
-console.log('✅ Portfolio loaded successfully!');
-console.log('📧 Email: inder16933@gmail.com');
-console.log('📞 Phone: +91 84376-16933');
+  });
+})();
